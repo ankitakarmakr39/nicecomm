@@ -26,6 +26,8 @@ const complianceRoutes = require("./routes/complianceRoutes");
 const complianceAssignmentRoutes = require("./routes/complianceAssignmentRoutes");
 const supportTicketRoutes = require("./routes/supportTicketRoutes");
 const supportAssignmentRoutes = require("./routes/supportAssignmentRoutes");
+const logisticsAssignmentRoutes = require("./routes/logisticsAssignmentRoutes");
+const packagingAssignmentRoutes = require("./routes/packagingAssignmentRoutes");
 
 const app = express();
 
@@ -126,6 +128,18 @@ app.use(
 app.use(
     "/api/support",
     supportAssignmentRoutes
+);
+
+// logisticsAssignment Routes
+app.use(
+    "/api/logistics",
+    logisticsAssignmentRoutes
+);
+
+// Packaging Assignment Routes
+app.use(
+    "/api/packaging",
+    packagingAssignmentRoutes
 );
 
 // Database Test API
