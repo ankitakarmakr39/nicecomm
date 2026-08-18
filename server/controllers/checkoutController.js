@@ -32,7 +32,7 @@ const checkout = async (req, res) => {
             SELECT *
             FROM carts
             WHERE customer_id = $1
-            AND status = 'Active'
+              AND status = 'Active'
             LIMIT 1
             `,
             [customerId]
@@ -131,6 +131,59 @@ const checkout = async (req, res) => {
 
         const order = orderResult.rows[0];
 
+        // Create Seller Assignments
+        const sellerIds = [
+            ...new Set(
+                itemsResult.rows.map(item => item.seller_id)
+            )
+        ];
+
+        for (const sellerId of sellerIds) {
+
+           const participantResult = await client.query(
+    `
+    SELECT p.id
+    FROM participants p
+    JOIN participant_types pt
+        ON pt.id = p.participant_type_id
+    WHERE p.id = $1
+      AND pt.name = 'Seller'
+      AND p.status = 'Active'
+    LIMIT 1
+    `,
+    [sellerId]
+);
+
+            if (participantResult.rows.length === 0) {
+                throw new Error(
+                    `Active Seller participant not found for seller user ${sellerId}`
+                );
+            }
+
+            const sellerParticipantId =
+                participantResult.rows[0].id;
+
+            await client.query(
+                `
+                INSERT INTO order_assignments
+                (
+                    order_id,
+                    participant_id,
+                    participant_role,
+                    status,
+                    assigned_at
+                )
+                VALUES
+                ($1, $2, $3, 'Assigned', CURRENT_TIMESTAMP)
+                `,
+                [
+                    order.id,
+                    sellerParticipantId,
+                    1
+                ]
+            );
+        }
+
         const orderItems = [];
 
         // Create Order Items + Reduce Stock
@@ -167,7 +220,8 @@ const checkout = async (req, res) => {
             await client.query(
                 `
                 UPDATE products
-                SET stock = stock - $1,
+                SET
+                    stock = stock - $1,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = $2
                 `,
@@ -199,7 +253,7 @@ const checkout = async (req, res) => {
 
         await client.query("COMMIT");
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "Checkout Successful",
             order,
             items: orderItems
@@ -207,11 +261,18 @@ const checkout = async (req, res) => {
 
     } catch (error) {
 
-        await client.query("ROLLBACK");
+        try {
+            await client.query("ROLLBACK");
+        } catch (rollbackError) {
+            console.error(
+                "Checkout Rollback Error:",
+                rollbackError
+            );
+        }
 
         console.error("Checkout Error:", error);
 
-        res.status(500).json({
+        return res.status(500).json({
             message: "Checkout Failed"
         });
 

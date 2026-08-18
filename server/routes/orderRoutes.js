@@ -3,6 +3,7 @@ const express = require("express");
 const router = express.Router();
 
 const { verifyToken } = require("../middleware/authMiddleware");
+
 const { requirePermission } = require("../middleware/permissionMiddleware");
 
 const {
@@ -10,11 +11,11 @@ const {
     createOrder
 } = require("../controllers/orderController");
 
-
 const {
     createAssignment,
     getAssignments,
-    updateAssignment
+    updateAssignment,
+    getMyAssignments
 } = require("../controllers/orderAssignmentController");
 
 
@@ -24,6 +25,15 @@ router.get(
     verifyToken,
     requirePermission("orders.view"),
     getOrders
+);
+
+
+// Get My Assignments
+router.get(
+    "/my-assignments",
+    verifyToken,
+    requirePermission("assignments.view"),
+    getMyAssignments
 );
 
 
@@ -52,6 +62,7 @@ router.get(
     requirePermission("assignments.view"),
     getAssignments
 );
+
 
 // Update Order Assignment
 router.put(

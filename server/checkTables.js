@@ -51,4 +51,30 @@ async function checkData() {
     }
 }
 
+
+
 checkData();
+
+
+
+async function checkUsersColumns() {
+    try {
+        const result = await pool.query(`
+            SELECT
+                column_name,
+                data_type
+            FROM information_schema.columns
+            WHERE table_name = 'users'
+            ORDER BY ordinal_position;
+        `);
+
+        console.log("===== USERS TABLE COLUMNS =====");
+        console.table(result.rows);
+
+    } catch (error) {
+        console.error("ERROR:", error);
+    }
+}
+
+checkUsersColumns();
+

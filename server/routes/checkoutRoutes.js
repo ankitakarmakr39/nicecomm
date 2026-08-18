@@ -8,7 +8,6 @@ const {
     checkout
 } = require("../controllers/checkoutController");
 
-
 // Checkout
 router.post(
     "/",

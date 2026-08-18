@@ -1,11 +1,44 @@
 const pool = require("../config/db");
 
 // Get All Products
+// Get Products
 const getProducts = async (req, res) => {
 
     try {
 
-        const result = await pool.query(`
+        const userId = req.user.id;
+        const userRole = req.user.role;
+
+
+        // Admin can see all products
+        if (userRole === "admin") {
+
+            const result = await pool.query(`
+                SELECT
+                    p.id,
+                    p.seller_id,
+                    u.full_name AS seller_name,
+                    p.name,
+                    p.description,
+                    p.price,
+                    p.stock,
+                    p.category,
+                    p.status,
+                    p.created_at,
+                    p.updated_at
+                FROM products p
+                JOIN users u
+                    ON p.seller_id = u.id
+                ORDER BY p.id;
+            `);
+
+            return res.json(result.rows);
+        }
+
+
+        // Participant/Seller can see own products
+        const result = await pool.query(
+            `
             SELECT
                 p.id,
                 p.seller_id,
@@ -18,17 +51,33 @@ const getProducts = async (req, res) => {
                 p.status,
                 p.created_at,
                 p.updated_at
+
             FROM products p
+
             JOIN users u
                 ON p.seller_id = u.id
+
+            JOIN participants part
+                ON part.user_id = p.seller_id
+
+            JOIN participant_types pt
+                ON pt.id = part.participant_type_id
+
+            WHERE p.seller_id = $1
+            AND pt.name = 'Seller'
+
             ORDER BY p.id;
-        `);
+            `,
+            [userId]
+        );
+
 
         res.json(result.rows);
 
+
     } catch (error) {
 
-        console.error(error);
+        console.error("Get Products Error:", error);
 
         res.status(500).json({
             message: "Failed to Fetch Products"

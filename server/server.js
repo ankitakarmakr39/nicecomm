@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const pool = require("./config/db");
 
 const userRoutes = require("./routes/userRoutes");
@@ -31,6 +32,7 @@ const packagingAssignmentRoutes = require("./routes/packagingAssignmentRoutes");
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
