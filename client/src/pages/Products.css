@@ -1064,3 +1064,21 @@
     padding-right: 18px;
   }
 }
+
+
+.product-action-button.cart {
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+}
+
+.product-action-button.cart:hover {
+  background: #dbeafe;
+  transform: translateY(-1px);
+}
+
+.product-action-button.cart:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}

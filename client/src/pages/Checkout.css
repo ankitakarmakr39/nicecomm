@@ -1,0 +1,246 @@
+
+.checkout-page {
+  padding: 34px;
+  min-height: 100%;
+  background: #f5f7fb;
+}
+
+.checkout-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 30px;
+}
+
+.checkout-eyebrow {
+  color: #7138df;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.checkout-header h1 {
+  margin: 8px 0 8px;
+  font-size: 36px;
+  color: #111827;
+}
+
+.checkout-header p {
+  margin: 0;
+  color: #64748b;
+  font-size: 15px;
+}
+
+.back-cart-button {
+  border: 1px solid #ddd6fe;
+  background: white;
+  color: #5b21b6;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.back-cart-button:hover {
+  background: #f5f3ff;
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 24px;
+  align-items: start;
+}
+
+.checkout-card,
+.checkout-summary-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(15, 23, 42, 0.04);
+}
+
+.checkout-card {
+  padding: 30px;
+}
+
+.checkout-card-header span,
+.checkout-summary-eyebrow {
+  color: #7138df;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.8px;
+}
+
+.checkout-card-header h2,
+.checkout-summary-card h2 {
+  margin: 8px 0 25px;
+  color: #111827;
+  font-size: 24px;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checkout-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.checkout-form-field label {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.checkout-form-field input,
+.checkout-form-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dbe1ea;
+  border-radius: 10px;
+  padding: 13px 14px;
+  font-size: 14px;
+  color: #111827;
+  outline: none;
+  background: white;
+  font-family: inherit;
+}
+
+.checkout-form-field textarea {
+  resize: vertical;
+}
+
+.checkout-form-field input:focus,
+.checkout-form-field textarea:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.checkout-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.checkout-error {
+  margin-bottom: 20px;
+  padding: 13px 15px;
+  border-radius: 10px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.checkout-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.checkout-cancel-button,
+.place-order-button {
+  border-radius: 10px;
+  padding: 13px 22px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.checkout-cancel-button {
+  background: white;
+  border: 1px solid #dbe1ea;
+  color: #475569;
+}
+
+.checkout-cancel-button:hover {
+  background: #f8fafc;
+}
+
+.place-order-button {
+  border: none;
+  background: #7c3aed;
+  color: white;
+  min-width: 150px;
+}
+
+.place-order-button:hover {
+  background: #6d28d9;
+}
+
+.place-order-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.checkout-summary-card {
+  padding: 26px;
+}
+
+.checkout-summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 13px 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.checkout-summary-line strong {
+  color: #111827;
+}
+
+.checkout-summary-divider {
+  height: 1px;
+  background: #e5e7eb;
+  margin: 12px 0 18px;
+}
+
+.checkout-summary-card p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .checkout-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-summary-card {
+    order: -1;
+  }
+}
+
+@media (max-width: 650px) {
+  .checkout-page {
+    padding: 20px;
+  }
+
+  .checkout-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+  }
+
+  .checkout-form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-form-actions {
+    flex-direction: column;
+  }
+
+  .checkout-cancel-button,
+  .place-order-button {
+    width: 100%;
+  }
+}
+

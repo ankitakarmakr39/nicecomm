@@ -1,10 +1,19 @@
+
 import { useState } from "react";
 import "./App.css";
+
 import Users from "./pages/Users";
+import Participants from "./pages/Participants";
 import Products from "./pages/Products";
+import Orders from "./pages/Orders";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
 
 /* =====================================================
    SIDEBAR MENU
+   NOTE:
+   Checkout is intentionally NOT included in sidebar.
+   Checkout is opened from Cart.
 ===================================================== */
 
 const menuGroups = [
@@ -106,7 +115,10 @@ function App() {
       }
 
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
       setUser(data.user);
       setLoggedIn(true);
@@ -144,7 +156,37 @@ function App() {
   };
 
   /* =====================================================
-     DASHBOARD
+     GO TO CHECKOUT
+     Cart -> Checkout
+  ===================================================== */
+
+  const handleCheckout = () => {
+    setActiveMenu("Checkout");
+    setSidebarOpen(false);
+  };
+
+  /* =====================================================
+     BACK TO CART
+     Checkout -> Cart
+  ===================================================== */
+
+  const handleBackToCart = () => {
+    setActiveMenu("Cart");
+    setSidebarOpen(false);
+  };
+
+  /* =====================================================
+     CHECKOUT COMPLETE
+     Checkout -> Orders
+  ===================================================== */
+
+  const handleCheckoutComplete = () => {
+    setActiveMenu("Orders");
+    setSidebarOpen(false);
+  };
+
+  /* =====================================================
+     LOGGED-IN DASHBOARD
   ===================================================== */
 
   if (loggedIn) {
@@ -187,7 +229,6 @@ function App() {
           <div className="sidebar-scroll">
 
             {menuGroups.map((group) => (
-
               <div
                 className="sidebar-group"
                 key={group.title}
@@ -200,7 +241,6 @@ function App() {
                 <nav className="sidebar-nav">
 
                   {group.items.map((item) => (
-
                     <button
                       key={item.name}
                       className={`sidebar-link ${
@@ -222,13 +262,11 @@ function App() {
                       </span>
 
                     </button>
-
                   ))}
 
                 </nav>
 
               </div>
-
             ))}
 
           </div>
@@ -362,11 +400,9 @@ function App() {
               <div className="header-profile">
 
                 <div className="profile-avatar">
-
                   {firstName
                     .charAt(0)
                     .toUpperCase()}
-
                 </div>
 
                 <div className="profile-details">
@@ -439,6 +475,8 @@ function App() {
 
                 <section className="stats-grid">
 
+                  {/* USERS */}
+
                   <div className="dashboard-stat-card">
 
                     <div className="stat-top">
@@ -462,6 +500,8 @@ function App() {
                     </strong>
 
                   </div>
+
+                  {/* PRODUCTS */}
 
                   <div className="dashboard-stat-card">
 
@@ -487,6 +527,8 @@ function App() {
 
                   </div>
 
+                  {/* ORDERS */}
+
                   <div className="dashboard-stat-card">
 
                     <div className="stat-top">
@@ -510,6 +552,8 @@ function App() {
                     </strong>
 
                   </div>
+
+                  {/* ASSIGNMENTS */}
 
                   <div className="dashboard-stat-card">
 
@@ -716,7 +760,9 @@ function App() {
 
                 </section>
 
-                {/* SYSTEM STATUS */}
+                {/* =================================================
+                    SYSTEM STATUS
+                ================================================= */}
 
                 <section className="bottom-overview">
 
@@ -809,6 +855,14 @@ function App() {
             )}
 
             {/* =================================================
+                PARTICIPANTS PAGE
+            ================================================= */}
+
+            {activeMenu === "Participants" && (
+              <Participants />
+            )}
+
+            {/* =================================================
                 PRODUCTS PAGE
             ================================================= */}
 
@@ -817,12 +871,51 @@ function App() {
             )}
 
             {/* =================================================
+                ORDERS PAGE
+            ================================================= */}
+
+            {activeMenu === "Orders" && (
+              <Orders />
+            )}
+
+            {/* =================================================
+                CART PAGE
+            ================================================= */}
+
+            {activeMenu === "Cart" && (
+              <Cart
+                onCheckout={handleCheckout}
+              />
+            )}
+
+            {/* =================================================
+                CHECKOUT PAGE
+
+                Checkout is NOT a sidebar item.
+
+                Cart -> Checkout
+                Checkout -> Cart
+                Checkout -> Orders
+            ================================================= */}
+
+            {activeMenu === "Checkout" && (
+              <Checkout
+                onBackToCart={handleBackToCart}
+                onCheckoutComplete={handleCheckoutComplete}
+              />
+            )}
+
+            {/* =================================================
                 OTHER MODULES
             ================================================= */}
 
             {activeMenu !== "Dashboard" &&
               activeMenu !== "Users" &&
-              activeMenu !== "Products" && (
+              activeMenu !== "Participants" &&
+              activeMenu !== "Products" &&
+              activeMenu !== "Orders" &&
+              activeMenu !== "Cart" &&
+              activeMenu !== "Checkout" && (
 
                 <section className="module-placeholder">
 
@@ -867,6 +960,10 @@ function App() {
 
   return (
     <div className="login-page">
+
+      {/* =================================================
+          LOGIN LEFT
+      ================================================= */}
 
       <section className="login-left">
 
@@ -914,6 +1011,7 @@ function App() {
 
             <div className="feature-item">
               <span>✓</span>
+
               <p>
                 Unified commerce management
               </p>
@@ -921,6 +1019,7 @@ function App() {
 
             <div className="feature-item">
               <span>✓</span>
+
               <p>
                 Role-based participant management
               </p>
@@ -928,6 +1027,7 @@ function App() {
 
             <div className="feature-item">
               <span>✓</span>
+
               <p>
                 Order and assignment tracking
               </p>
@@ -942,6 +1042,10 @@ function App() {
         </p>
 
       </section>
+
+      {/* =================================================
+          LOGIN RIGHT
+      ================================================= */}
 
       <section className="login-right">
 
@@ -977,6 +1081,8 @@ function App() {
 
           <form onSubmit={handleLogin}>
 
+            {/* EMAIL */}
+
             <div className="form-group">
 
               <label htmlFor="email">
@@ -995,6 +1101,8 @@ function App() {
               />
 
             </div>
+
+            {/* PASSWORD */}
 
             <div className="form-group">
 
@@ -1023,6 +1131,8 @@ function App() {
 
             </div>
 
+            {/* REMEMBER */}
+
             <div className="remember-row">
 
               <label>
@@ -1036,6 +1146,8 @@ function App() {
               </label>
 
             </div>
+
+            {/* LOGIN BUTTON */}
 
             <button
               type="submit"
@@ -1082,6 +1194,13 @@ function ModuleCard({
     <div
       className="professional-module"
       onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          onClick();
+        }
+      }}
     >
 
       <div className="module-top">

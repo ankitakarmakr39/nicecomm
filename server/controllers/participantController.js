@@ -8,6 +8,7 @@ const getParticipants = async (req, res) => {
         const result = await pool.query(`
             SELECT
                 p.id,
+                p.participant_type_id,
                 u.full_name,
                 u.email,
                 pt.name AS participant_type,
