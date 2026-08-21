@@ -7,26 +7,44 @@ const {
     updateLogisticsAssignment
 } = require("../controllers/logisticsAssignmentController");
 
-const { verifyToken } = require("../middleware/authMiddleware");
+const {
+    getAllLogisticsAssignments
+} = require("../controllers/logisticsController");
+
+const {
+    verifyToken
+} = require("../middleware/authMiddleware");
 
 
-// ======================================
-// Create Logistics Assignment
-// ======================================
+// =====================================================
+// GET ALL LOGISTICS ASSIGNMENTS
+// Admin
+// =====================================================
+
+router.get(
+    "/assignments",
+    verifyToken,
+    getAllLogisticsAssignments
+);
+
+
+// =====================================================
+// CREATE LOGISTICS ASSIGNMENT
+// =====================================================
 
 router.post(
-    "/assign",
+    "/assignments",
     verifyToken,
     createLogisticsAssignment
 );
 
 
-// ======================================
-// Update Logistics Assignment
-// ======================================
+// =====================================================
+// UPDATE LOGISTICS ASSIGNMENT
+// =====================================================
 
 router.put(
-    "/assign/:assignmentId",
+    "/assignments/:assignmentId",
     verifyToken,
     updateLogisticsAssignment
 );

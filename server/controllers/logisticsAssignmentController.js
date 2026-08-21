@@ -1,11 +1,12 @@
-
 const pool = require("../config/db");
+
 
 // ======================================
 // Create Logistics Assignment
 // ======================================
 const createLogisticsAssignment = async (req, res) => {
     try {
+
         const participantId = req.user.id;
 
         const {
@@ -15,6 +16,44 @@ const createLogisticsAssignment = async (req, res) => {
             destination_address,
             status
         } = req.body;
+
+
+        // ======================================
+        // Validate Required Fields
+        // ======================================
+
+        if (
+            !order_id ||
+            !logistics_id ||
+            !pickup_address ||
+            !destination_address
+        ) {
+            return res.status(400).json({
+                message:
+                    "order_id, logistics_id, pickup_address and destination_address are required"
+            });
+        }
+
+
+        // ======================================
+        // Check Logistics Provider Exists
+        // ======================================
+
+        const logisticsProvider = await pool.query(
+            `
+            SELECT id, participant_id, company_name, status
+            FROM logistics_providers
+            WHERE id = $1
+            `,
+            [logistics_id]
+        );
+
+
+        if (logisticsProvider.rows.length === 0) {
+            return res.status(404).json({
+                message: "Logistics Provider Not Found"
+            });
+        }
 
 
         // ======================================
@@ -39,8 +78,10 @@ const createLogisticsAssignment = async (req, res) => {
 
         if (existingAssignment.rows.length > 0) {
             return res.status(400).json({
-                message: "Logistics already has an active assignment for this order",
-                assignment: existingAssignment.rows[0]
+                message:
+                    "Logistics already has an active assignment for this order",
+                assignment:
+                    existingAssignment.rows[0]
             });
         }
 
@@ -73,8 +114,10 @@ const createLogisticsAssignment = async (req, res) => {
 
 
         res.status(201).json({
-            message: "Logistics Assignment Created Successfully",
-            assignment: result.rows[0]
+            message:
+                "Logistics Assignment Created Successfully",
+            assignment:
+                result.rows[0]
         });
 
 
@@ -85,8 +128,90 @@ const createLogisticsAssignment = async (req, res) => {
             error
         );
 
+
         res.status(500).json({
-            message: "Failed to Create Logistics Assignment"
+            message:
+                "Failed to Create Logistics Assignment"
+        });
+    }
+};
+
+
+
+
+// ======================================
+// Get My Logistics Assignments
+// ======================================
+
+
+const getLogisticsAssignments = async (req, res) => {
+    try {
+
+        console.log("LOGISTICS USER:", req.user);
+
+
+        const participantId = req.user.id;
+
+
+        // ======================================
+        // Fetch Assignments
+        // ======================================
+
+        const result = await pool.query(
+            `
+            SELECT
+                la.id AS assignment_id,
+                la.order_id,
+                la.logistics_id,
+
+                lp.company_name,
+                lp.contact_person,
+                lp.phone,
+
+                la.pickup_address,
+                la.destination_address,
+
+                la.status,
+                la.assigned_at,
+                la.completed_at
+
+            FROM logistics_assignments la
+
+            JOIN logistics_providers lp
+                ON la.logistics_id = lp.id
+
+            WHERE lp.participant_id = $1
+
+            ORDER BY la.assigned_at DESC
+            `,
+            [participantId]
+        );
+
+
+        // ======================================
+        // Response
+        // ======================================
+
+        res.json({
+            message:
+                "Logistics Assignments Fetched Successfully",
+
+            assignments:
+                result.rows
+        });
+
+
+    } catch (error) {
+
+        console.error(
+            "Get Logistics Assignments Error:",
+            error
+        );
+
+
+        res.status(500).json({
+            message:
+                "Failed to Fetch Logistics Assignments"
         });
     }
 };
@@ -101,9 +226,13 @@ const updateLogisticsAssignment = async (req, res) => {
 
         const participantId = req.user.id;
 
-        const { assignmentId } = req.params;
+        const {
+            assignmentId
+        } = req.params;
 
-        const { status } = req.body;
+        const {
+            status
+        } = req.body;
 
 
         // ======================================
@@ -119,19 +248,21 @@ const updateLogisticsAssignment = async (req, res) => {
 
         if (!allowedStatuses.includes(status)) {
             return res.status(400).json({
-                message: "Invalid Logistics Assignment Status"
+                message:
+                    "Invalid Logistics Assignment Status"
             });
         }
 
 
         // ======================================
-        // Check Assignment Belongs
+        // Check Assignment Belongs To Participant
         // ======================================
 
         const assignmentResult = await pool.query(
             `
             SELECT
                 la.*
+
             FROM logistics_assignments la
 
             JOIN logistics_providers lp
@@ -149,7 +280,8 @@ const updateLogisticsAssignment = async (req, res) => {
 
         if (assignmentResult.rows.length === 0) {
             return res.status(404).json({
-                message: "Logistics Assignment Not Found"
+                message:
+                    "Logistics Assignment Not Found"
             });
         }
 
@@ -173,10 +305,13 @@ const updateLogisticsAssignment = async (req, res) => {
         const result = await pool.query(
             `
             UPDATE logistics_assignments
+
             SET
                 status = $1,
                 completed_at = $2
+
             WHERE id = $3
+
             RETURNING *
             `,
             [
@@ -187,9 +322,16 @@ const updateLogisticsAssignment = async (req, res) => {
         );
 
 
+        // ======================================
+        // Response
+        // ======================================
+
         res.json({
-            message: "Logistics Assignment Updated Successfully",
-            assignment: result.rows[0]
+            message:
+                "Logistics Assignment Updated Successfully",
+
+            assignment:
+                result.rows[0]
         });
 
 
@@ -200,15 +342,23 @@ const updateLogisticsAssignment = async (req, res) => {
             error
         );
 
+
         res.status(500).json({
-            message: "Failed to Update Logistics Assignment"
+            message:
+                "Failed to Update Logistics Assignment"
         });
     }
 };
 
 
 
+// ======================================
+// EXPORT
+// ======================================
+
 module.exports = {
     createLogisticsAssignment,
+    getLogisticsAssignments,
     updateLogisticsAssignment
 };
+

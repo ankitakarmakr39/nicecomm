@@ -8,9 +8,20 @@ const {
     createLogisticsProfile,
     getLogisticsProfile,
     updateLogisticsProfile,
-    getLogisticsShipments
+    getLogisticsShipments,
+    getAllLogisticsProviders,
 } = require("../controllers/logisticsController");
 
+
+// ======================================
+// Admin - All Logistics Providers
+// ======================================
+
+router.get(
+    "/providers",
+    verifyToken,
+    getAllLogisticsProviders
+);
 
 // ======================================
 // Logistics Profile

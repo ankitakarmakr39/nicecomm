@@ -225,9 +225,102 @@ const getLogisticsShipments = async (req, res) => {
 };
 
 
+
+// ===============================
+// Get All Logistics Providers
+// Admin Dashboard
+// ===============================
+const getAllLogisticsProviders = async (req, res) => {
+    try {
+        const result = await pool.query(
+            `
+            SELECT
+                lp.id,
+                lp.participant_id,
+                lp.company_name,
+                lp.contact_person,
+                lp.phone,
+                lp.fleet_size,
+                lp.service_areas,
+                lp.status,
+                lp.created_at,
+                lp.updated_at
+            FROM logistics_providers lp
+            ORDER BY lp.created_at DESC
+            `
+        );
+
+        res.json({
+            message: "Logistics Providers Fetched Successfully",
+            logistics: result.rows
+        });
+
+    } catch (error) {
+        console.error(
+            "Get All Logistics Providers Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Fetch Logistics Providers"
+        });
+    }
+};
+
+// ======================================
+// Get All Logistics Assignments
+// Admin View
+// ======================================
+
+const getAllLogisticsAssignments = async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                la.id AS assignment_id,
+                la.order_id,
+                la.logistics_id,
+
+                lp.company_name,
+                lp.contact_person,
+                lp.phone,
+
+                la.pickup_address,
+                la.destination_address,
+                la.status,
+                la.assigned_at,
+                la.completed_at
+
+            FROM logistics_assignments la
+
+            JOIN logistics_providers lp
+                ON la.logistics_id = lp.id
+
+            ORDER BY la.assigned_at DESC
+        `);
+
+        res.json({
+            message: "Logistics Assignments Fetched Successfully",
+            assignments: result.rows
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get All Logistics Assignments Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Fetch Logistics Assignments"
+        });
+    }
+};
+
 module.exports = {
     createLogisticsProfile,
     getLogisticsProfile,
     updateLogisticsProfile,
-    getLogisticsShipments
+    getLogisticsShipments,
+    getAllLogisticsProviders,
+    getAllLogisticsAssignments
 };
