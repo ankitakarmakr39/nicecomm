@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import Users from "./pages/Users";
@@ -8,6 +8,8 @@ import Products from "./pages/Products";
 import Orders from "./pages/Orders";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
+import Logistics from "./pages/Logistics";
+
 
 /* =====================================================
    SIDEBAR MENU
@@ -84,6 +86,7 @@ function App() {
 
   const [activeMenu, setActiveMenu] = useState("Dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [dashboardStats, setDashboardStats] = useState({ totalUsers: 0, totalProducts: 0, totalOrders: 0, totalAssignments: 0, }); const [dashboardStatsLoading, setDashboardStatsLoading] = useState(true); useEffect(() => { const fetchDashboardStats = async () => { const token = localStorage.getItem("token"); if (!token) { setDashboardStatsLoading(false); return; } try { const response = await fetch("http://localhost:5000/api/dashboard/stats", { method: "GET", headers: { Authorization: `Bearer ${token}`, }, }); const data = await response.json(); if (!response.ok) { console.error("Dashboard Stats Error:", data.message); return; } setDashboardStats({ totalUsers: Number(data.totalUsers || 0), totalProducts: Number(data.totalProducts || 0), totalOrders: Number(data.totalOrders || 0), totalAssignments: Number(data.totalAssignments || 0), }); } catch (error) { console.error("Dashboard Stats Fetch Error:", error); } finally { setDashboardStatsLoading(false); } }; fetchDashboardStats(); }, []);
 
   /* =====================================================
      LOGIN
@@ -201,9 +204,8 @@ function App() {
         ================================================= */}
 
         <aside
-          className={`sidebar ${
-            sidebarOpen ? "sidebar-open" : ""
-          }`}
+          className={`sidebar ${sidebarOpen ? "sidebar-open" : ""
+            }`}
         >
 
           {/* BRAND */}
@@ -243,11 +245,10 @@ function App() {
                   {group.items.map((item) => (
                     <button
                       key={item.name}
-                      className={`sidebar-link ${
-                        activeMenu === item.name
-                          ? "active"
-                          : ""
-                      }`}
+                      className={`sidebar-link ${activeMenu === item.name
+                        ? "active"
+                        : ""
+                        }`}
                       onClick={() =>
                         handleMenuClick(item.name)
                       }
@@ -280,11 +281,10 @@ function App() {
             {/* SETTINGS */}
 
             <button
-              className={`sidebar-link ${
-                activeMenu === "Settings"
-                  ? "active"
-                  : ""
-              }`}
+              className={`sidebar-link ${activeMenu === "Settings"
+                ? "active"
+                : ""
+                }`}
               onClick={() =>
                 handleMenuClick("Settings")
               }
@@ -496,7 +496,9 @@ function App() {
                     </span>
 
                     <strong className="stat-number">
-                      —
+                      {dashboardStatsLoading
+                        ? "..."
+                        : dashboardStats.totalUsers}
                     </strong>
 
                   </div>
@@ -522,7 +524,9 @@ function App() {
                     </span>
 
                     <strong className="stat-number">
-                      —
+                      {dashboardStatsLoading
+                        ? "..."
+                        : dashboardStats.totalProducts}
                     </strong>
 
                   </div>
@@ -548,7 +552,9 @@ function App() {
                     </span>
 
                     <strong className="stat-number">
-                      —
+                      {dashboardStatsLoading
+                        ? "..."
+                        : dashboardStats.totalOrders}
                     </strong>
 
                   </div>
@@ -574,7 +580,9 @@ function App() {
                     </span>
 
                     <strong className="stat-number">
-                      —
+                      {dashboardStatsLoading
+                        ? "..."
+                        : dashboardStats.totalAssignments}
                     </strong>
 
                   </div>
@@ -905,6 +913,15 @@ function App() {
               />
             )}
 
+
+            {/* =================================================
+                LOGISTICS PAGE
+            ================================================= */}
+
+            {activeMenu === "Logistics" && (
+              <Logistics />
+            )}
+
             {/* =================================================
                 OTHER MODULES
             ================================================= */}
@@ -915,7 +932,8 @@ function App() {
               activeMenu !== "Products" &&
               activeMenu !== "Orders" &&
               activeMenu !== "Cart" &&
-              activeMenu !== "Checkout" && (
+              activeMenu !== "Checkout" &&
+              activeMenu !== "Logistics" && (
 
                 <section className="module-placeholder">
 
