@@ -1,16 +1,36 @@
 const express = require("express");
+
 const router = express.Router();
 
 const {
     createComplianceProfile,
     getComplianceProfile,
-    updateComplianceProfile
+    updateComplianceProfile,
+    getAllCompliancePartners
 } = require("../controllers/complianceController");
 
-const { verifyToken } = require("../middleware/authMiddleware");
+const {
+    verifyToken
+} = require("../middleware/authMiddleware");
 
 
+// ======================================
+// ADMIN
+// Get All Compliance Partners
+// ======================================
+
+router.get(
+    "/all",
+    verifyToken,
+    getAllCompliancePartners
+);
+
+
+// ======================================
+// PARTICIPANT
 // Create Compliance Profile
+// ======================================
+
 router.post(
     "/profile",
     verifyToken,
@@ -18,7 +38,11 @@ router.post(
 );
 
 
-// Get Compliance Profile
+// ======================================
+// PARTICIPANT
+// Get Own Compliance Profile
+// ======================================
+
 router.get(
     "/profile",
     verifyToken,
@@ -26,7 +50,11 @@ router.get(
 );
 
 
-// Update Compliance Profile
+// ======================================
+// PARTICIPANT
+// Update Own Compliance Profile
+// ======================================
+
 router.put(
     "/profile",
     verifyToken,

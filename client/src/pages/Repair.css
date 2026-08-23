@@ -1,0 +1,473 @@
+.repair-page {
+    padding: 28px;
+    background: #f6f7fb;
+    min-height: 100vh;
+    color: #1f2937;
+}
+
+
+/* ======================================
+   Header
+====================================== */
+
+.repair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.repair-header h1 {
+    margin: 0;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.repair-header p {
+    margin: 6px 0 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.repair-refresh-btn {
+    border: none;
+    background: #6d28d9;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.repair-refresh-btn:hover {
+    background: #5b21b6;
+}
+
+
+/* ======================================
+   Error
+====================================== */
+
+.repair-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    padding: 14px 16px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+
+/* ======================================
+   Profile
+====================================== */
+
+.repair-profile-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 22px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.repair-section-title {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.section-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    background: #ede9fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.repair-section-title h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.repair-section-title p {
+    margin: 4px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.repair-status {
+    margin-left: auto;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.repair-status.active {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.repair-status.inactive {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.repair-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.repair-info-box {
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.repair-info-box.full-width {
+    grid-column: 1 / -1;
+}
+
+.repair-info-box span {
+    display: block;
+    color: #6b7280;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.repair-info-box strong {
+    font-size: 14px;
+    color: #111827;
+}
+
+
+/* ======================================
+   Statistics
+====================================== */
+
+.repair-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.repair-stat-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.stat-icon.purple {
+    background: #ede9fe;
+}
+
+.stat-icon.blue {
+    background: #dbeafe;
+}
+
+.stat-icon.orange {
+    background: #ffedd5;
+}
+
+.stat-icon.green {
+    background: #dcfce7;
+}
+
+.repair-stat-card span {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 4px;
+}
+
+.repair-stat-card strong {
+    font-size: 23px;
+}
+
+
+/* ======================================
+   Content Card
+====================================== */
+
+.repair-content-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    margin-bottom: 22px;
+    overflow: hidden;
+}
+
+.repair-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 22px 24px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.repair-card-header h2 {
+    margin: 0;
+    font-size: 19px;
+}
+
+.repair-card-header p {
+    margin: 5px 0 0;
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.count-badge {
+    min-width: 30px;
+    height: 30px;
+    padding: 0 9px;
+    border-radius: 15px;
+    background: #ede9fe;
+    color: #6d28d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+
+/* ======================================
+   Table
+====================================== */
+
+.repair-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.repair-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.repair-table th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 12px;
+    text-align: left;
+    padding: 13px 16px;
+    white-space: nowrap;
+    font-weight: 700;
+}
+
+.repair-table td {
+    padding: 15px 16px;
+    border-top: 1px solid #f0f1f3;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.repair-table tbody tr:hover {
+    background: #fafafa;
+}
+
+
+/* ======================================
+   Customer
+====================================== */
+
+.customer-name {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.customer-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ede9fe;
+    color: #6d28d9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+}
+
+
+/* ======================================
+   Status
+====================================== */
+
+.table-status {
+    display: inline-flex;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.table-status.assigned {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.table-status.in-progress {
+    background: #ffedd5;
+    color: #c2410c;
+}
+
+.table-status.completed {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+
+/* ======================================
+   Actions
+====================================== */
+
+.repair-actions {
+    display: flex;
+    align-items: center;
+}
+
+.action-btn {
+    border: none;
+    padding: 7px 13px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.progress-btn {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.progress-btn:hover:not(:disabled) {
+    background: #bfdbfe;
+}
+
+.complete-btn {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.complete-btn:hover:not(:disabled) {
+    background: #bbf7d0;
+}
+
+.completed-label {
+    color: #15803d;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* ======================================
+   Empty
+====================================== */
+
+.repair-empty {
+    padding: 35px;
+    text-align: center;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* ======================================
+   Loading
+====================================== */
+
+.repair-loading {
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #6b7280;
+}
+
+.repair-spinner {
+    width: 34px;
+    height: 34px;
+    border: 4px solid #e5e7eb;
+    border-top-color: #6d28d9;
+    border-radius: 50%;
+    animation: repairSpin 0.8s linear infinite;
+    margin-bottom: 12px;
+}
+
+@keyframes repairSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ======================================
+   Responsive
+====================================== */
+
+@media (max-width: 1000px) {
+    .repair-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 700px) {
+    .repair-page {
+        padding: 16px;
+    }
+
+    .repair-header {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .repair-header h1 {
+        font-size: 25px;
+    }
+
+    .repair-profile-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .repair-info-box.full-width {
+        grid-column: auto;
+    }
+
+    .repair-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .repair-card-header {
+        padding: 18px;
+    }
+}

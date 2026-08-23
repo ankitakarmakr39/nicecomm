@@ -155,9 +155,62 @@ const updateComplianceProfile = async (req, res) => {
     }
 };
 
+// ======================================
+// Get All Compliance Partners - ADMIN
+// ======================================
+const getAllCompliancePartners = async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                c.id,
+                c.participant_id,
+                c.company_name,
+                c.contact_person,
+                c.phone,
+                c.compliance_types,
+                c.service_areas,
+                c.status,
+                c.created_at,
+                c.updated_at,
+
+                p.company_name AS participant_company_name,
+                p.contact_person AS participant_contact_person,
+                p.status AS participant_status,
+
+                pt.name AS participant_type
+
+            FROM compliances c
+
+            LEFT JOIN participants p
+                ON c.participant_id = p.id
+
+            LEFT JOIN participant_types pt
+                ON p.participant_type_id = pt.id
+
+            ORDER BY c.id DESC
+        `);
+
+        res.json({
+            message: "Compliance Partners Fetched Successfully",
+            compliances: result.rows
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get All Compliance Partners Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Compliance Partners"
+        });
+    }
+};
 
 module.exports = {
     createComplianceProfile,
     getComplianceProfile,
-    updateComplianceProfile
+    updateComplianceProfile,
+    getAllCompliancePartners
 };

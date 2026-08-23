@@ -419,6 +419,149 @@ const createMarketingCampaign = async (req, res) => {
     }
 };
 
+// ======================================
+// Admin - Get All Marketing Agencies
+// ======================================
+const getAllMarketingAgencies = async (req, res) => {
+    try {
+
+        const result = await pool.query(
+            `
+            SELECT
+                id,
+                participant_id,
+                agency_name,
+                contact_person,
+                phone,
+                email,
+                service_areas,
+                status,
+                created_at,
+                updated_at
+            FROM marketing_agencies
+            ORDER BY created_at DESC
+            `
+        );
+
+        res.json({
+            message: "Marketing Agencies Fetched Successfully",
+            agencies: result.rows
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get All Marketing Agencies Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Marketing Agencies"
+        });
+    }
+};
+
+
+// ======================================
+// Admin - Get All Marketing Clients
+// ======================================
+const getAllMarketingClients = async (req, res) => {
+    try {
+
+        const result = await pool.query(
+            `
+            SELECT
+                mc.id,
+                mc.agency_id,
+                agency.agency_name,
+                mc.participant_id,
+                mc.client_name,
+                mc.client_type,
+                mc.status,
+                mc.created_at,
+                mc.updated_at
+
+            FROM marketing_clients AS mc
+
+            JOIN marketing_agencies AS agency
+                ON mc.agency_id = agency.id
+
+            ORDER BY mc.created_at DESC
+            `
+        );
+
+        res.json({
+            message: "Marketing Clients Fetched Successfully",
+            clients: result.rows
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get All Marketing Clients Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Marketing Clients"
+        });
+    }
+};
+
+
+// ======================================
+// Admin - Get All Marketing Campaigns
+// ======================================
+const getAllMarketingCampaigns = async (req, res) => {
+    try {
+
+        const result = await pool.query(
+            `
+            SELECT
+                campaign.id,
+                campaign.agency_id,
+                agency.agency_name,
+                campaign.client_id,
+                client.client_name,
+                campaign.campaign_name,
+                campaign.campaign_type,
+                campaign.description,
+                campaign.status,
+                campaign.start_date,
+                campaign.end_date,
+                campaign.created_at,
+                campaign.updated_at
+
+            FROM marketing_campaigns AS campaign
+
+            JOIN marketing_agencies AS agency
+                ON campaign.agency_id = agency.id
+
+            LEFT JOIN marketing_clients AS client
+                ON campaign.client_id = client.id
+
+            ORDER BY campaign.created_at DESC
+            `
+        );
+
+        res.json({
+            message: "Marketing Campaigns Fetched Successfully",
+            campaigns: result.rows
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Get All Marketing Campaigns Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Marketing Campaigns"
+        });
+    }
+};
+
 
 module.exports = {
     createAgencyProfile,
@@ -427,5 +570,10 @@ module.exports = {
     getMarketingClients,
     createMarketingClient,
     getMarketingCampaigns,
-    createMarketingCampaign
+    createMarketingCampaign,
+
+    // Admin
+    getAllMarketingAgencies,
+    getAllMarketingClients,
+    getAllMarketingCampaigns
 };

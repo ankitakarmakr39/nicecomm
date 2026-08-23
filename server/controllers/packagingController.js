@@ -78,7 +78,8 @@ const createPackagingProfile = async (req, res) => {
 
 
 // ======================================
-// Get Packaging Profile
+// Get My Packaging Profile
+// Participant
 // ======================================
 const getPackagingProfile = async (req, res) => {
     try {
@@ -114,7 +115,7 @@ const getPackagingProfile = async (req, res) => {
 
 
 // ======================================
-// Update Packaging Profile
+// Update My Packaging Profile
 // ======================================
 const updatePackagingProfile = async (req, res) => {
     try {
@@ -176,7 +177,8 @@ const updatePackagingProfile = async (req, res) => {
 
 
 // ======================================
-// Get Assigned Orders
+// Get My Assigned Packaging Orders
+// Participant
 // ======================================
 const getPackagingOrders = async (req, res) => {
     try {
@@ -223,9 +225,104 @@ const getPackagingOrders = async (req, res) => {
 };
 
 
+// ======================================
+// ADMIN
+// Get All Packaging Providers
+// ======================================
+const getAllPackagingProviders = async (req, res) => {
+    try {
+
+        const result = await pool.query(
+            `
+            SELECT
+                id,
+                participant_id,
+                company_name,
+                contact_person,
+                phone,
+                packaging_types,
+                capacity,
+                status,
+                created_at,
+                updated_at
+            FROM packaging_providers
+            ORDER BY created_at DESC
+            `
+        );
+
+        res.json({
+            message: "Packaging Providers Fetched Successfully",
+            packaging: result.rows
+        });
+
+    } catch (error) {
+        console.error(
+            "Get All Packaging Providers Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Packaging Providers"
+        });
+    }
+};
+
+
+// ======================================
+// ADMIN
+// Get All Packaging Assignments
+// ======================================
+const getAllPackagingAssignments = async (req, res) => {
+    try {
+
+        const result = await pool.query(
+            `
+            SELECT
+                pa.id AS assignment_id,
+                pa.order_id,
+                pa.packaging_id,
+                pp.company_name,
+                pp.contact_person,
+                pp.phone,
+                pa.packaging_type,
+                pa.status,
+                pa.assigned_at,
+                pa.completed_at
+            FROM packaging_assignments AS pa
+
+            JOIN packaging_providers AS pp
+                ON pa.packaging_id = pp.id
+
+            ORDER BY pa.assigned_at DESC
+            `
+        );
+
+        res.json({
+            message: "Packaging Assignments Fetched Successfully",
+            assignments: result.rows
+        });
+
+    } catch (error) {
+        console.error(
+            "Get All Packaging Assignments Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Packaging Assignments"
+        });
+    }
+};
+
+
+// ======================================
+// EXPORTS
+// ======================================
 module.exports = {
     createPackagingProfile,
     getPackagingProfile,
     updatePackagingProfile,
-    getPackagingOrders
+    getPackagingOrders,
+    getAllPackagingProviders,
+    getAllPackagingAssignments
 };

@@ -11,7 +11,12 @@ const {
     getMarketingClients,
     createMarketingClient,
     getMarketingCampaigns,
-    createMarketingCampaign
+    createMarketingCampaign,
+
+    // Admin
+    getAllMarketingAgencies,
+    getAllMarketingClients,
+    getAllMarketingCampaigns
 } = require("../controllers/marketingController");
 
 
@@ -71,5 +76,37 @@ router.post(
     createMarketingCampaign
 );
 
+
+// ======================================
+// Admin - Marketing Agencies
+// ======================================
+
+router.get(
+    "/all",
+    verifyToken,
+    getAllMarketingAgencies
+);
+
+
+// ======================================
+// Admin - Marketing Clients
+// ======================================
+
+router.get(
+    "/clients/all",
+    verifyToken,
+    getAllMarketingClients
+);
+
+
+// ======================================
+// Admin - Marketing Campaigns
+// ======================================
+
+router.get(
+    "/campaigns/all",
+    verifyToken,
+    getAllMarketingCampaigns
+);
 
 module.exports = router;

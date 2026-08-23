@@ -1,28 +1,63 @@
+
 const express = require("express");
+
 const router = express.Router();
 
 const {
-    assignSupportTicket,
-    getSupportTicketAssignments
-} = require("../controllers/supportAssignmentController");
+    createSupportTicket,
+    getMySupportTickets,
+    getSupportTicketById,
+    updateSupportTicketStatus
+} = require("../controllers/supportTicketController");
 
-const { verifyToken } = require("../middleware/authMiddleware");
+const {
+    verifyToken
+} = require("../middleware/authMiddleware");
 
 
-// Assign Support Ticket
+// ======================================
+// Create Support Ticket
+// ======================================
+
 router.post(
-    "/tickets/assign",
+    "/tickets",
     verifyToken,
-    assignSupportTicket
+    createSupportTicket
 );
 
 
-// Get Ticket Assignments
+// ======================================
+// Get My Support Tickets
+// ======================================
+
 router.get(
-    "/tickets/:ticketId/assignments",
+    "/tickets",
     verifyToken,
-    getSupportTicketAssignments
+    getMySupportTickets
+);
+
+
+// ======================================
+// Get Single Support Ticket
+// ======================================
+
+router.get(
+    "/tickets/:id",
+    verifyToken,
+    getSupportTicketById
+);
+
+
+// ======================================
+// Update Support Ticket Status
+// ======================================
+
+router.put(
+    "/tickets/:id/status",
+    verifyToken,
+    updateSupportTicketStatus
 );
 
 
 module.exports = router;
+

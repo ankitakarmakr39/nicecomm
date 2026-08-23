@@ -4,7 +4,8 @@ const router = express.Router();
 const {
     createInstallationProfile,
     getInstallationProfile,
-    updateInstallationProfile
+    updateInstallationProfile,
+    getAllInstallationProviders
 } = require("../controllers/installationController");
 
 const { verifyToken } = require("../middleware/authMiddleware");
@@ -31,6 +32,16 @@ router.put(
     "/profile",
     verifyToken,
     updateInstallationProfile
+);
+
+// ======================================
+// Get All Installation Providers - ADMIN
+// ======================================
+
+router.get(
+    "/admin/all",
+    verifyToken,
+    getAllInstallationProviders
 );
 
 

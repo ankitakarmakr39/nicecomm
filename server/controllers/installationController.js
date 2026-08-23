@@ -149,9 +149,54 @@ const updateInstallationProfile = async (req, res) => {
     }
 };
 
+// ======================================
+// Get All Installation Providers - ADMIN
+// ======================================
+const getAllInstallationProviders = async (req, res) => {
+    try {
+        // Only admin can access
+        if (req.user.role !== "admin") {
+            return res.status(403).json({
+                message: "Admin Access Required"
+            });
+        }
+
+        const result = await pool.query(`
+            SELECT
+                i.id,
+                i.participant_id,
+                i.company_name,
+                i.contact_person,
+                i.phone,
+                i.service_areas,
+                i.status,
+                i.created_at,
+                i.updated_at
+            FROM installations i
+            ORDER BY i.created_at DESC
+        `);
+
+        res.json({
+            message: "Installation Providers Fetched Successfully",
+            installations: result.rows
+        });
+
+    } catch (error) {
+        console.error(
+            "Get All Installation Providers Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Fetch Installation Providers"
+        });
+    }
+};
+
 
 module.exports = {
     createInstallationProfile,
     getInstallationProfile,
-    updateInstallationProfile
+    updateInstallationProfile,
+    getAllInstallationProviders
 };

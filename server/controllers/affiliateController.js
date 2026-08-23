@@ -96,15 +96,39 @@ const createAffiliateProfile = async (req, res) => {
 // ======================================
 const getAffiliateProfile = async (req, res) => {
     try {
-        const participantId = req.user.id;
 
+        const userId = req.user.id;
+        const userRole = req.user.role;
+
+        // ======================================
+        // ADMIN
+        // ======================================
+        if (userRole === "admin") {
+
+            const result = await pool.query(
+                `
+                SELECT *
+                FROM affiliates
+                ORDER BY created_at DESC
+                `
+            );
+
+            return res.json({
+                affiliates: result.rows
+            });
+        }
+
+
+        // ======================================
+        // PARTICIPANT
+        // ======================================
         const result = await pool.query(
             `
             SELECT *
             FROM affiliates
             WHERE participant_id = $1
             `,
-            [participantId]
+            [userId]
         );
 
         if (result.rows.length === 0) {
@@ -132,6 +156,7 @@ const getAffiliateProfile = async (req, res) => {
 // ======================================
 const updateAffiliateProfile = async (req, res) => {
     try {
+
         const participantId = req.user.id;
 
         const {
@@ -142,9 +167,12 @@ const updateAffiliateProfile = async (req, res) => {
             status
         } = req.body;
 
-        // If referral code is being changed,
-        // check whether another affiliate is using it.
+
+        // ======================================
+        // Check Referral Code
+        // ======================================
         if (referral_code) {
+
             const existingCode = await pool.query(
                 `
                 SELECT id
@@ -152,7 +180,10 @@ const updateAffiliateProfile = async (req, res) => {
                 WHERE referral_code = $1
                 AND participant_id != $2
                 `,
-                [referral_code, participantId]
+                [
+                    referral_code,
+                    participantId
+                ]
             );
 
             if (existingCode.rows.length > 0) {
@@ -162,6 +193,10 @@ const updateAffiliateProfile = async (req, res) => {
             }
         }
 
+
+        // ======================================
+        // Update
+        // ======================================
         const result = await pool.query(
             `
             UPDATE affiliates
@@ -185,11 +220,13 @@ const updateAffiliateProfile = async (req, res) => {
             ]
         );
 
+
         if (result.rows.length === 0) {
             return res.status(404).json({
                 message: "Affiliate Profile Not Found"
             });
         }
+
 
         res.json({
             message: "Affiliate Profile Updated Successfully",
@@ -197,7 +234,11 @@ const updateAffiliateProfile = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Update Affiliate Profile Error:", error);
+
+        console.error(
+            "Update Affiliate Profile Error:",
+            error
+        );
 
         res.status(500).json({
             message: "Failed to Update Affiliate Profile"
@@ -207,12 +248,55 @@ const updateAffiliateProfile = async (req, res) => {
 
 
 // ======================================
-// Get Commission Table
+// Get Affiliate Commissions
 // ======================================
 const getAffiliateCommissions = async (req, res) => {
     try {
-        const participantId = req.user.id;
 
+        const userId = req.user.id;
+        const userRole = req.user.role;
+
+
+        // ======================================
+        // ADMIN
+        // ======================================
+        if (userRole === "admin") {
+
+            const result = await pool.query(
+                `
+                SELECT
+                    commission.id,
+                    commission.affiliate_id,
+                    commission.order_id,
+                    commission.referral_code,
+                    commission.order_amount,
+                    commission.commission_rate,
+                    commission.commission_amount,
+                    commission.status,
+                    commission.created_at,
+                    commission.updated_at,
+
+                    affiliate.affiliate_name,
+                    affiliate.participant_id
+
+                FROM affiliate_commissions AS commission
+
+                JOIN affiliates AS affiliate
+                    ON commission.affiliate_id = affiliate.id
+
+                ORDER BY commission.created_at DESC
+                `
+            );
+
+            return res.json({
+                commissions: result.rows
+            });
+        }
+
+
+        // ======================================
+        // PARTICIPANT
+        // ======================================
         const result = await pool.query(
             `
             SELECT
@@ -225,6 +309,7 @@ const getAffiliateCommissions = async (req, res) => {
                 commission.status,
                 commission.created_at,
                 commission.updated_at
+
             FROM affiliate_commissions AS commission
 
             JOIN affiliates AS affiliate
@@ -234,13 +319,17 @@ const getAffiliateCommissions = async (req, res) => {
 
             ORDER BY commission.created_at DESC
             `,
-            [participantId]
+            [userId]
         );
 
         res.json(result.rows);
 
     } catch (error) {
-        console.error("Get Affiliate Commissions Error:", error);
+
+        console.error(
+            "Get Affiliate Commissions Error:",
+            error
+        );
 
         res.status(500).json({
             message: "Failed to Get Affiliate Commissions"
@@ -254,6 +343,7 @@ const getAffiliateCommissions = async (req, res) => {
 // ======================================
 const createAffiliateCommission = async (req, res) => {
     try {
+
         const participantId = req.user.id;
 
         const {
@@ -265,21 +355,31 @@ const createAffiliateCommission = async (req, res) => {
             status
         } = req.body;
 
+
+        // ======================================
+        // Referral Code Required
+        // ======================================
         if (!referral_code) {
             return res.status(400).json({
                 message: "Referral Code is required"
             });
         }
 
-        // Find affiliate
+
+        // ======================================
+        // Find Affiliate
+        // ======================================
         const affiliateResult = await pool.query(
             `
-            SELECT id, referral_code
+            SELECT
+                id,
+                referral_code
             FROM affiliates
             WHERE participant_id = $1
             `,
             [participantId]
         );
+
 
         if (affiliateResult.rows.length === 0) {
             return res.status(404).json({
@@ -287,15 +387,23 @@ const createAffiliateCommission = async (req, res) => {
             });
         }
 
+
         const affiliate = affiliateResult.rows[0];
 
-        // Ensure commission belongs to this affiliate
+
+        // ======================================
+        // Validate Referral Code
+        // ======================================
         if (affiliate.referral_code !== referral_code) {
             return res.status(400).json({
                 message: "Invalid Referral Code"
             });
         }
 
+
+        // ======================================
+        // Create Commission
+        // ======================================
         const result = await pool.query(
             `
             INSERT INTO affiliate_commissions
@@ -323,13 +431,18 @@ const createAffiliateCommission = async (req, res) => {
             ]
         );
 
+
         res.status(201).json({
             message: "Affiliate Commission Created Successfully",
             commission: result.rows[0]
         });
 
     } catch (error) {
-        console.error("Create Affiliate Commission Error:", error);
+
+        console.error(
+            "Create Affiliate Commission Error:",
+            error
+        );
 
         res.status(500).json({
             message: "Failed to Create Affiliate Commission"
@@ -338,10 +451,89 @@ const createAffiliateCommission = async (req, res) => {
 };
 
 
+// ======================================
+// Admin - Get All Affiliates
+// ======================================
+const getAllAffiliates = async (req, res) => {
+    try {
+        const result = await pool.query(
+            `
+            SELECT *
+            FROM affiliates
+            ORDER BY created_at DESC
+            `
+        );
+
+        res.json({
+            message: "Affiliates Fetched Successfully",
+            affiliates: result.rows
+        });
+
+    } catch (error) {
+        console.error("Get All Affiliates Error:", error);
+
+        res.status(500).json({
+            message: "Failed to Get Affiliates"
+        });
+    }
+};
+
+
+// ======================================
+// Admin - Get All Affiliate Commissions
+// ======================================
+const getAllAffiliateCommissions = async (req, res) => {
+    try {
+        const result = await pool.query(
+            `
+            SELECT
+                commission.id,
+                commission.affiliate_id,
+                affiliate.affiliate_name,
+                commission.order_id,
+                commission.referral_code,
+                commission.order_amount,
+                commission.commission_rate,
+                commission.commission_amount,
+                commission.status,
+                commission.created_at,
+                commission.updated_at
+
+            FROM affiliate_commissions AS commission
+
+            JOIN affiliates AS affiliate
+                ON commission.affiliate_id = affiliate.id
+
+            ORDER BY commission.created_at DESC
+            `
+        );
+
+        res.json({
+            message: "Affiliate Commissions Fetched Successfully",
+            commissions: result.rows
+        });
+
+    } catch (error) {
+        console.error(
+            "Get All Affiliate Commissions Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Affiliate Commissions"
+        });
+    }
+};
+
+// ======================================
+// EXPORTS
+// ======================================
 module.exports = {
     createAffiliateProfile,
     getAffiliateProfile,
     updateAffiliateProfile,
     getAffiliateCommissions,
-    createAffiliateCommission
+    createAffiliateCommission,
+    getAllAffiliates,
+    getAllAffiliateCommissions
 };

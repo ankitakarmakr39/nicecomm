@@ -14,6 +14,21 @@ const createRepairProfile = async (req, res) => {
             status
         } = req.body;
 
+        const existingProfile = await pool.query(
+            `
+    SELECT id
+    FROM repairs
+    WHERE participant_id = $1
+    `,
+            [participantId]
+        );
+
+        if (existingProfile.rows.length > 0) {
+            return res.status(400).json({
+                message: "Repair Profile Already Exists"
+            });
+        }
+
         const result = await pool.query(
             `INSERT INTO repairs
             (
@@ -149,9 +164,63 @@ const updateRepairProfile = async (req, res) => {
     }
 };
 
+// ======================================
+// Admin - Get All Repair Partners
+// ======================================
+const getAllRepairPartners = async (req, res) => {
+    try {
+        const result = await pool.query(`
+            SELECT
+                r.id,
+                r.participant_id,
+                r.company_name,
+                r.contact_person,
+                r.phone,
+                r.service_areas,
+                r.status,
+                r.created_at,
+                r.updated_at,
+
+                p.company_name AS participant_company_name,
+                p.contact_person AS participant_contact_person,
+                p.status AS participant_status,
+
+                pt.name AS participant_type
+
+            FROM repairs r
+
+            LEFT JOIN participants p
+                ON r.participant_id = p.id
+
+            LEFT JOIN participant_types pt
+                ON p.participant_type_id = pt.id
+
+            ORDER BY r.created_at DESC
+        `);
+
+        res.json({
+            message: "Repair Partners Fetched Successfully",
+            repairs: result.rows
+        });
+
+    } catch (error) {
+        console.error(
+            "Get All Repair Partners Error:",
+            error
+        );
+
+        res.status(500).json({
+            message: "Failed to Get Repair Partners"
+        });
+    }
+};
+
 
 module.exports = {
     createRepairProfile,
     getRepairProfile,
-    updateRepairProfile
+    updateRepairProfile,
+
+    // Admin
+    getAllRepairPartners
 };

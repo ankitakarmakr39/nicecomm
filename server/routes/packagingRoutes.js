@@ -8,29 +8,60 @@ const {
     createPackagingProfile,
     getPackagingProfile,
     updatePackagingProfile,
-    getPackagingOrders
+    getPackagingOrders,
+    getAllPackagingProviders,
+    getAllPackagingAssignments
 } = require("../controllers/packagingController");
 
 
 // ======================================
-// Packaging Profile
+// ADMIN
+// Get All Packaging Providers
+// ======================================
+
+router.get(
+    "/providers",
+    verifyToken,
+    getAllPackagingProviders
+);
+
+
+// ======================================
+// ADMIN
+// Get All Packaging Assignments
+// ======================================
+
+router.get(
+    "/assignments",
+    verifyToken,
+    getAllPackagingAssignments
+);
+
+
+// ======================================
+// PACKAGING PROFILE
 // ======================================
 
 // Create Packaging Profile
+
 router.post(
     "/profile",
     verifyToken,
     createPackagingProfile
 );
 
+
 // Get My Packaging Profile
+
 router.get(
     "/profile",
     verifyToken,
     getPackagingProfile
 );
 
+
 // Update My Packaging Profile
+
 router.put(
     "/profile",
     verifyToken,
@@ -39,10 +70,10 @@ router.put(
 
 
 // ======================================
-// Assigned Orders
+// ASSIGNED ORDERS
+// Participant
 // ======================================
 
-// Get My Assigned Orders
 router.get(
     "/orders",
     verifyToken,

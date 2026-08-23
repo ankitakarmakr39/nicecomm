@@ -14,7 +14,18 @@ const createInspectionAssignment = async (req, res) => {
             status
         } = req.body;
 
-        // Check existing active assignment
+        // ======================================
+        // Required Fields
+        // ======================================
+        if (!order_id || !customer_id || !inspection_type) {
+            return res.status(400).json({
+                message: "Order ID, Customer ID and Inspection Type are required"
+            });
+        }
+
+        // ======================================
+        // Check Existing Active Assignment
+        // ======================================
         const existingAssignment = await pool.query(
             `
             SELECT id, status
@@ -39,7 +50,9 @@ const createInspectionAssignment = async (req, res) => {
             });
         }
 
-        // Create new assignment
+        // ======================================
+        // Create Assignment
+        // ======================================
         const result = await pool.query(
             `
             INSERT INTO inspection_assignments
@@ -68,7 +81,6 @@ const createInspectionAssignment = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(
             "Create Inspection Assignment Error:",
             error
@@ -114,7 +126,6 @@ const getInspectionAssignments = async (req, res) => {
         res.json(result.rows);
 
     } catch (error) {
-
         console.error(
             "Get Inspection Assignments Error:",
             error
@@ -137,14 +148,15 @@ const updateInspectionAssignment = async (req, res) => {
         const { assignmentId } = req.params;
         const { status } = req.body;
 
-        // Allowed statuses
+        // ======================================
+        // Allowed Statuses
+        // ======================================
         const allowedStatuses = [
             "Assigned",
             "In Progress",
             "Completed"
         ];
 
-        // Validate status
         if (!allowedStatuses.includes(status)) {
             return res.status(400).json({
                 message: "Invalid Inspection Assignment Status",
@@ -152,7 +164,9 @@ const updateInspectionAssignment = async (req, res) => {
             });
         }
 
-        // Check assignment belongs to logged-in participant
+        // ======================================
+        // Check Assignment
+        // ======================================
         const assignmentResult = await pool.query(
             `
             SELECT *
@@ -172,14 +186,22 @@ const updateInspectionAssignment = async (req, res) => {
             });
         }
 
-        // Completed হলে completed_at set হবে
-        let completedAt = null;
+        // ======================================
+        // Completed Date
+        // ======================================
+        let completedAt = assignmentResult.rows[0].completed_at;
 
         if (status === "Completed") {
             completedAt = new Date();
         }
 
-        // Update assignment
+        if (status !== "Completed") {
+            completedAt = null;
+        }
+
+        // ======================================
+        // Update Assignment
+        // ======================================
         const result = await pool.query(
             `
             UPDATE inspection_assignments
@@ -204,7 +226,6 @@ const updateInspectionAssignment = async (req, res) => {
         });
 
     } catch (error) {
-
         console.error(
             "Update Inspection Assignment Error:",
             error

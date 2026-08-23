@@ -9,6 +9,16 @@ import Orders from "./pages/Orders";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
 import Logistics from "./pages/Logistics";
+import Warehouse from "./pages/Warehouse";
+import Packaging from "./pages/Packaging";
+import Marketing from "./pages/Marketing";
+import Affiliate from "./pages/Affiliate";
+import Inspection from "./pages/Inspection";
+import Repair from "./pages/Repair";
+import Installation from "./pages/Installation";
+import Compliance from "./pages/Compliance";
+import SupportTickets from "./pages/SupportTickets";
+import Settings from "./pages/Settings";
 
 
 /* =====================================================
@@ -923,6 +933,90 @@ function App() {
             )}
 
             {/* =================================================
+                WAREHOUSE PAGE
+            ================================================= */}
+
+            {activeMenu === "Warehouse" && (
+              <Warehouse />
+            )}
+
+            {/* =================================================
+                PACKAGING PAGE
+            ================================================= */}
+
+            {activeMenu === "Packaging" && (
+              <Packaging />
+            )}
+
+            {/* =================================================
+                MARKETING PAGE
+            ================================================= */}
+
+            {activeMenu === "Marketing" && (
+              <Marketing />
+            )}
+
+            {/* =================================================
+                AFFILIATE PAGE
+            ================================================= */}
+
+            {activeMenu === "Affiliate" && (
+              <Affiliate />
+            )}
+
+
+            {/* =================================================
+                INSPECTION PAGE
+            ================================================= */}
+
+            {activeMenu === "Inspection" && (
+              <Inspection />
+            )}
+
+             {/* =================================================
+                REPAIR PAGE
+            ================================================= */}
+
+            {activeMenu === "Repair" && (
+              <Repair />
+            )}
+
+            {/* =================================================
+                Installation PAGE
+            ================================================= */}
+
+            {activeMenu === "Installation" && (
+              <Installation />
+            )}
+
+
+            {/* =================================================
+                COMPLIANCE PAGE
+            ================================================= */}
+
+            {activeMenu === "Compliance" && (
+              <Compliance />
+            )}
+
+            {/* =================================================
+                SupportTicket PAGE
+            ================================================= */}
+
+            {activeMenu === "Support Tickets" && (
+              <SupportTickets />
+            )}
+
+            {/* =================================================
+                SupportTicket PAGE
+            ================================================= */}
+
+            {activeMenu === "Settings" && (
+              <Settings />
+            )}
+
+
+
+            {/* =================================================
                 OTHER MODULES
             ================================================= */}
 
@@ -933,7 +1027,17 @@ function App() {
               activeMenu !== "Orders" &&
               activeMenu !== "Cart" &&
               activeMenu !== "Checkout" &&
-              activeMenu !== "Logistics" && (
+              activeMenu !== "Logistics" &&
+              activeMenu !== "Warehouse" &&
+              activeMenu !== "Packaging" &&
+              activeMenu !== "Marketing" &&
+              activeMenu !== "Affiliate" &&
+              activeMenu !== "Inspection" &&
+              activeMenu !== "Repair" &&
+              activeMenu !== "Installation" &&
+              activeMenu !== "Compliance" &&
+              activeMenu !== "Support Tickets" &&
+              activeMenu !== "Settings" && (
 
                 <section className="module-placeholder">
 

@@ -4,6 +4,7 @@ const router = express.Router();
 
 const {
     createLogisticsAssignment,
+    getLogisticsAssignments,
     updateLogisticsAssignment
 } = require("../controllers/logisticsAssignmentController");
 
@@ -47,6 +48,17 @@ router.put(
     "/assignments/:assignmentId",
     verifyToken,
     updateLogisticsAssignment
+);
+
+// =====================================================
+// GET MY LOGISTICS ASSIGNMENTS
+// Logistics Participant
+// =====================================================
+
+router.get(
+    "/my-assignments",
+    verifyToken,
+    getLogisticsAssignments
 );
 
 

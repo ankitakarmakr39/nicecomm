@@ -9,7 +9,9 @@ const {
     getAffiliateProfile,
     updateAffiliateProfile,
     getAffiliateCommissions,
-    createAffiliateCommission
+    createAffiliateCommission,
+    getAllAffiliates,
+    getAllAffiliateCommissions
 } = require("../controllers/affiliateController");
 
 
@@ -50,6 +52,27 @@ router.post(
     "/commissions",
     verifyToken,
     createAffiliateCommission
+);
+
+// ======================================
+// Admin - All Affiliates
+// ======================================
+
+router.get(
+    "/all",
+    verifyToken,
+    getAllAffiliates
+);
+
+
+// ======================================
+// Admin - All Commissions
+// ======================================
+
+router.get(
+    "/commissions/all",
+    verifyToken,
+    getAllAffiliateCommissions
 );
 
 
