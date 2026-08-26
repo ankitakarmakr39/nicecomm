@@ -30,6 +30,7 @@ const supportAssignmentRoutes = require("./routes/supportAssignmentRoutes");
 const logisticsAssignmentRoutes = require("./routes/logisticsAssignmentRoutes");
 const packagingAssignmentRoutes = require("./routes/packagingAssignmentRoutes");
 const dashboardRoute = require("./routes/dashboardRoute");
+const settingsRoutes = require("./routes/settingsRoutes");
 
 const app = express();
 
@@ -147,6 +148,9 @@ app.use(
 
 // Dashboard Routes
 app.use("/api/dashboard", dashboardRoute);
+
+// Settings Routes
+app.use("/api/settings", settingsRoutes);
 
 // Database Test API
 app.get("/test-db", async (req, res) => {
